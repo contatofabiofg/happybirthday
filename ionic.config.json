@@ -1,0 +1,8 @@
+{
+  "name": "happybirthday",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue",
+  "id": "b0d820b7"
+}
