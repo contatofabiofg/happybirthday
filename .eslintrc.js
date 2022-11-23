@@ -1,31 +1,31 @@
+/* eslint-env node */
+
 module.exports = {
   root: true,
-  env: {
-    node: true
-  },
-  'extends': [
+  extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
-    '@vue/typescript/recommended'
+    '@vue/eslint-config-prettier',
   ],
   parserOptions: {
-    ecmaVersion: 2020
+    ecmaVersion: 'latest',
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'vue/no-deprecated-slot-attribute': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
+    'vue/attribute-hyphenation': 'off',
+    'vue/multi-word-component-names': 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-unused-vars': [
+      'error',
+      { vars: 'all', args: 'after-used', ignoreRestSiblings: true },
+    ],
+    'prettier/prettier': [
+      'error',
+      {
+        semi: false,
+        singleQuote: true,
+        endOfLine: 'auto',
+      },
+    ],
+    'no-var': 2,
   },
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
-      ],
-      env: {
-        jest: true
-      }
-    }
-  ]
 }
