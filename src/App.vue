@@ -4,6 +4,8 @@ import { IonApp, IonRouterOutlet } from '@ionic/vue'
 
 <template>
   <ion-app>
-    <ion-router-outlet />
+    <div class="w-full h-full">
+      <ion-router-outlet />
+    </div>
   </ion-app>
 </template>

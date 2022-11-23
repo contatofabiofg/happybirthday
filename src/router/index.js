@@ -1,17 +1,18 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router'
 
 const routes = [
+  { path: '/login', component: () => import('@/views/Login.vue') },
   {
     path: '/',
     component: () => import('@/views/Menu.vue'),
-    redirect: '/dashboard',
+    redirect: '/login',
     children: [
       {
         path: 'dashboard',
         component: () => import('../components/Dashboard.vue'),
       },
       {
-        path: 'lancamento',
+        path: 'cadastro',
         component: () => import('../components/Cadastro.vue'),
       },
     ],
