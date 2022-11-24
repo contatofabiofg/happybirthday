@@ -1,10 +1,10 @@
 <script setup>
 import { IonPage, IonButton, IonLabel, IonIcon } from '@ionic/vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { initializeApp } from 'firebase/app'
-import { firebaseConfig, getAllDocs } from '../firebase'
+
+import { getAllDocs, getCurrentUser, keyFire } from '../firebase'
 import { add } from 'ionicons/icons'
 
 const result = ref('')
@@ -22,14 +22,17 @@ function ordenar() {
   })
 }
 
-initializeApp(firebaseConfig)
+watch(keyFire, () => {
+  getData()
+})
+
 const auth = getAuth()
 
-onAuthStateChanged(auth, () => {
-  if (auth.currentUser) {
-    collection.value = auth.currentUser.email
-    getData()
-  }
+onAuthStateChanged(auth, async () => {
+  alert(JSON.stringify(auth))
+  let usuario = await getCurrentUser()
+  collection.value = usuario.email
+  getData()
 })
 
 async function getData() {

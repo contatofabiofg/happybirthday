@@ -25,10 +25,7 @@ const dayInput = ref('')
 const collection = ref('')
 
 onAuthStateChanged(auth, () => {
-  if (auth.currentUser) {
-    console.log(auth.currentUser)
-    collection.value = auth.currentUser.email
-  }
+  collection.value
 })
 
 const months31 = [
@@ -75,7 +72,7 @@ async function gravar(fechar) {
     day: dayInput.value,
   }
 
-  createName(obj, collection.value)
+  createName(obj)
   limpar()
 
   if (fechar) {

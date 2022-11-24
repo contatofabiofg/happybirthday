@@ -2,7 +2,8 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { doc, collection, setDoc, getDocs, deleteDoc } from 'firebase/firestore'
-//import { ref, onUnmounted } from 'vue'
+import { ref } from 'vue'
+import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyCPahw5Gur6j73ppI1emMW8e--6Naz62ss',
@@ -15,10 +16,38 @@ export const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig)
 
+export const keyFire = ref(0)
+
 const db = getFirestore(firebaseApp)
 
-export async function createName(item, col) {
-  setDoc(doc(db, col, item.name), item)
+export const userCol = ref(null)
+
+export const getCurrentUser = async () => {
+  const result = await FirebaseAuthentication.getCurrentUser()
+  return result.user
+}
+
+export const signInWithGoogle = async () => {
+  let result
+
+  try {
+    result = await FirebaseAuthentication.signInWithGoogle()
+    let user = await getCurrentUser()
+    userCol.value = user.email
+  } catch (e) {
+    alert(e)
+  }
+
+  return result.user
+}
+
+export const signOut = async () => {
+  await FirebaseAuthentication.signOut()
+}
+
+export async function createName(item) {
+  setDoc(doc(db, userCol.value, item.name), item)
+  keyFire.value++
 }
 
 export async function getAllDocs(col) {

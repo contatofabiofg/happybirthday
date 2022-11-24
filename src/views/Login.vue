@@ -9,10 +9,11 @@ import {
   signInWithRedirect,
   signInWithEmailAndPassword,
   FacebookAuthProvider,
-  GoogleAuthProvider,
   onAuthStateChanged,
   sendEmailVerification,
 } from 'firebase/auth'
+
+import { signInWithGoogle } from '../firebase'
 
 initializeApp(firebaseConfig)
 
@@ -21,7 +22,7 @@ const auth = getAuth()
 const emailInput = ref('')
 const passInput = ref(null)
 const providerFacebook = new FacebookAuthProvider()
-const providerGoogle = new GoogleAuthProvider()
+
 const loading = ref(true)
 
 onAuthStateChanged(auth, (user) => {
@@ -71,7 +72,10 @@ function handleFacebookLogin() {
 }
 
 function handleGoogleLogin() {
-  signInWithRedirect(auth, providerGoogle)
+  //signInWithRedirect(auth, providerGoogle)
+  signInWithGoogle().then(() => {
+    router.push('/dashboard')
+  })
 }
 </script>
 

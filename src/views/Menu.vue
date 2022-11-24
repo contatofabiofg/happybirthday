@@ -8,17 +8,13 @@ import {
   IonRouterOutlet,
 } from '@ionic/vue'
 import { useRouter } from 'vue-router'
-import { initializeApp } from 'firebase/app'
-import { firebaseConfig } from '../firebase'
-import { getAuth } from 'firebase/auth'
 
-initializeApp(firebaseConfig)
-const auth = getAuth()
+import { signOut } from '../firebase'
+
 const router = useRouter()
 
-function logout() {
-  auth.signOut()
-
+async function logout() {
+  await signOut()
   router.push('/login')
 }
 </script>
