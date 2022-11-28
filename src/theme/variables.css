@@ -3,19 +3,18 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  
+  font-family: 'Roboto';
  
 }
 
-html {
-  font-family: 'Roboto';
-}
+
 
 .ion-page {
   background: url('/src/theme/wall.png') ;
@@ -23,6 +22,10 @@ html {
 
 li {
   list-style-type: none;
+}
+
+.berk {
+  font-family: 'Berkshire Swash', cursive;
 }
 
 

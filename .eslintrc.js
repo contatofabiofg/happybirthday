@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     'vue/attribute-hyphenation': 'off',
     'vue/multi-word-component-names': 'off',
+    'vue/no-deprecated-slot-attribute': 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-unused-vars': [
       'error',

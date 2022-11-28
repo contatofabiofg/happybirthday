@@ -3,7 +3,6 @@ import {
   IonPage,
   IonHeader,
   IonToolbar,
-  IonTitle,
   IonContent,
   IonRouterOutlet,
 } from '@ionic/vue'
@@ -21,13 +20,17 @@ async function logout() {
 
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <ion-header>
       <ion-toolbar>
-        <ion-title class="relative">Happy Birthday!</ion-title>
+        <img
+          src="../theme/logo.png"
+          alt="Logo Happy Birthday"
+          class="w-48 m-auto my-3"
+        />
         <img
           src="../theme/logout.png"
           alt=""
-          class="absolute top-3 right-5 w-5 cursor-pointer"
+          class="absolute top-5 right-5 w-5 cursor-pointer"
           @click="logout()"
         />
       </ion-toolbar>

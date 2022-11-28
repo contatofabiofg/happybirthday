@@ -1,7 +1,14 @@
 /* eslint-disable no-undef */
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { doc, collection, setDoc, getDocs, deleteDoc } from 'firebase/firestore'
+import {
+  doc,
+  collection,
+  setDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+} from 'firebase/firestore'
 import { ref } from 'vue'
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 
@@ -50,6 +57,15 @@ export async function createName(item) {
   keyFire.value++
 }
 
+export async function updateName(item) {
+  try {
+    updateDoc(doc(db, userCol.value, item.name), item)
+  } catch (e) {
+    alert(e)
+  }
+  keyFire.value++
+}
+
 export async function getAllDocs(col) {
   let responseData
 
@@ -60,20 +76,20 @@ export async function getAllDocs(col) {
   return responseData
 }
 
-export async function searchName(name, pass, col) {
+export async function searchName(id) {
   let obj
+  console.log('abaixo')
+  console.log(id)
+  console.log(userCol.value)
 
-  await getDocs(collection(db, col)).then((response) => {
+  await getDocs(collection(db, userCol.value)).then((response) => {
     response.forEach((element) => {
-      if (
-        element.data().name.toLowerCase() == name.toLowerCase() &&
-        element.data().pass == pass
-      ) {
-        obj = { name: element.data().name, friend: element.data().friend }
+      if (element.data().id == id) {
+        obj = element.data()
       }
     })
   })
-  console.log(obj)
+
   return obj
 }
 

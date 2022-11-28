@@ -15,6 +15,10 @@ const routes = [
         path: 'cadastro',
         component: () => import('../components/Cadastro.vue'),
       },
+      {
+        path: 'cadastro/:id',
+        component: () => import('../components/Cadastro.vue'),
+      },
     ],
   },
 ]

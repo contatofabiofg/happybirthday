@@ -84,8 +84,14 @@ function handleGoogleLogin() {
     <div
       class="mt-16 m-auto p-2 w-[95%] flex flex-col rounded-xl bg-white drop-shadow-md"
     >
+      <img
+        src="../theme/logo.png"
+        alt="Logo Happy Birthday"
+        class="w-60 m-auto my-3"
+      />
       <label for="email">Email</label>
       <input
+        class="border border-slate-400 rounded w-full p-2 my-2 outline-none duration-100 focus:drop-shadow-md"
         type="text"
         id="email"
         v-model="emailInput"
@@ -93,6 +99,7 @@ function handleGoogleLogin() {
       />
       <label for="pass">Senha</label>
       <input
+        class="border border-slate-400 rounded w-full p-2 my-2 outline-none duration-100 focus:drop-shadow-md"
         type="password"
         id="pass"
         v-model="passInput"

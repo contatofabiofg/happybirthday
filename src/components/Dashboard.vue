@@ -1,6 +1,6 @@
 <script setup>
-import { IonPage, IonButton, IonLabel, IonIcon } from '@ionic/vue'
-import { ref, watch } from 'vue'
+import { IonPage, IonFab, IonFabButton, IonLabel, IonIcon } from '@ionic/vue'
+import { ref, watch, require } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
@@ -10,6 +10,7 @@ import { add } from 'ionicons/icons'
 const result = ref('')
 const resultOrder = ref('')
 const collection = ref('')
+const loading = ref(true)
 const date = new Date()
 // eslint-disable-next-line no-unused-vars
 const atualMonth = date.getMonth() + 1
@@ -29,7 +30,6 @@ watch(keyFire, () => {
 const auth = getAuth()
 
 onAuthStateChanged(auth, async () => {
-  alert(JSON.stringify(auth))
   let usuario = await getCurrentUser()
   collection.value = usuario.email
   getData()
@@ -48,57 +48,75 @@ async function getData() {
       connection: element.data().connection,
       number: element.data().number,
       sex: element.data().sex,
+      img: element.data().img,
+      id: element.data().id,
     }
     result.value.push(obj)
   })
 
+  loading.value = false
+
   ordenar()
+}
+
+function editarPessoa(id) {
+  router.push('/cadastro/' + id)
+}
+
+function showEmoji(img) {
+  return require('../theme/emoji/' + img)
 }
 
 const router = useRouter()
 </script>
 <template>
   <ion-page>
-    <div
-      class="mt-16 m-auto p-2 w-[95%] flex flex-col rounded-xl bg-white drop-shadow-md"
-    >
-      <ion-button
-        class="w-full"
-        @click="router.push('/cadastro')"
-        shape="round"
-        color="success"
-      >
+    <ion-fab class="fixed bottom-5 right-5">
+      <ion-fab-button @click="router.push('/cadastro')">
         <ion-icon :icon="add"></ion-icon>
-        Adicionar</ion-button
-      >
-      <ion-label class="text-center my-5 font-bold"
-        >Próximos Aniversários</ion-label
-      >
-      <div
-        v-if="resultOrder.length > 0"
-        class="border border-slate-300 rounded"
-      >
-        <li>
-          <ul
-            class="w-full flex justify-between border-b border-slate-300 p-3 font-bold bg-slate-200"
-          >
-            <span> Nome </span>
-            <span> Data </span>
-          </ul>
-        </li>
-        <div class="h-56 overflow-scroll">
+      </ion-fab-button>
+    </ion-fab>
+    <div
+      class="mt-20 m-auto p-2 w-[95%] flex flex-col rounded-xl bg-white/95 drop-shadow-xl"
+    >
+      <ion-label class="my-3">Próximos Aniversários: </ion-label>
+      <div v-if="!loading && resultOrder.length > 0">
+        <div class="h-[75vh] overflow-scroll">
           <li :inset="true" v-for="(item, index) in resultOrder" :key="index">
             <ul
-              class="w-full flex justify-between border-b border-slate-300 p-3"
+              class="w-full flex justify-between p-2 border-b border-slate-300"
+              :class="[
+                index % 2 == 0
+                  ? 'bg-gradient-to-r from-slate-100 to-slate-50'
+                  : 'bg-gradient-to-r from-blue-100 to-slate-50',
+              ]"
+              @click="editarPessoa(item.id)"
             >
-              <span>{{ item.name }}</span>
-              <span>{{ item.day }}/{{ item.month }}</span>
+              <div class="flex items-center">
+                <span>
+                  <div
+                    class="w-10 border-2 border-slate-300 mr-2 bg-white/50 p-1 rounded-full"
+                  >
+                    <img
+                      :src="showEmoji(item.img)"
+                      alt="emoticon"
+                      class="w-7"
+                    />
+                  </div>
+                </span>
+                <span class="text-2xl font-bold">{{ item.name }}</span>
+              </div>
+
+              <span class="text-2xl">{{ item.day }}/{{ item.month }}</span>
             </ul>
           </li>
         </div>
       </div>
-      <div v-else>
-        <img src="../theme/spinner.gif" alt="" class="w-16 m-auto" />
+      <div v-if="!loading && resultOrder.length == 0" class="h-[75vh]">
+        <img src="../theme/emptylist.png" alt="" class="w-56 m-auto mt-20" />
+      </div>
+      <div v-if="loading" class="h-[75vh]">
+        <img src="../theme/spinner.gif" alt="" class="w-24 m-auto mt-20" />
       </div>
     </div>
   </ion-page>
