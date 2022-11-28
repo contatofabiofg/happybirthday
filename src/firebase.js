@@ -66,9 +66,11 @@ export async function createName(item) {
   if (!userCol.value) {
     await getCurrentUser().then(() => {
       setDoc(doc(db, userCol.value, item.name), item)
-      keyFire.value++
     })
+  } else {
+    setDoc(doc(db, userCol.value, item.name), item)
   }
+  keyFire.value++
 }
 
 export async function updateName(item) {

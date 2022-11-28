@@ -83,6 +83,7 @@ async function gravar(atualizar) {
     month: monthInput.value,
     day: dayInput.value,
     img: img.value,
+    id: new Date().getTime(),
   }
 
   if (atualizar) {
@@ -158,6 +159,7 @@ const alerta = async (atualizar) => {
     >
       <ion-label class="font-bold">Nome</ion-label>
       <input
+        :disabled="idPerson"
         id="name"
         v-model="nameInput"
         type="text"
