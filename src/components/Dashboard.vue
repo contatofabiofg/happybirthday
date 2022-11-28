@@ -84,7 +84,7 @@ const router = useRouter()
         <div class="h-[75vh] overflow-scroll">
           <li :inset="true" v-for="(item, index) in resultOrder" :key="index">
             <ul
-              class="w-full flex justify-between p-2 border-b border-slate-300"
+              class="w-full flex justify-between p-2 border-b border-slate-300 cursor-pointer"
               :class="[
                 index % 2 == 0
                   ? 'bg-gradient-to-r from-slate-100 to-slate-50'

@@ -29,8 +29,18 @@ const db = getFirestore(firebaseApp)
 
 export const userCol = ref(null)
 
+export const createUserWithEmailAndPassword = async (e, p) => {
+  const result = await FirebaseAuthentication.createUserWithEmailAndPassword({
+    email: e,
+    password: p,
+  })
+  return result.user
+}
+
 export const getCurrentUser = async () => {
   const result = await FirebaseAuthentication.getCurrentUser()
+
+  userCol.value = result.user.email
   return result.user
 }
 
@@ -53,8 +63,12 @@ export const signOut = async () => {
 }
 
 export async function createName(item) {
-  setDoc(doc(db, userCol.value, item.name), item)
-  keyFire.value++
+  if (!userCol.value) {
+    await getCurrentUser().then(() => {
+      setDoc(doc(db, userCol.value, item.name), item)
+      keyFire.value++
+    })
+  }
 }
 
 export async function updateName(item) {
@@ -78,17 +92,26 @@ export async function getAllDocs(col) {
 
 export async function searchName(id) {
   let obj
-  console.log('abaixo')
-  console.log(id)
-  console.log(userCol.value)
 
-  await getDocs(collection(db, userCol.value)).then((response) => {
-    response.forEach((element) => {
-      if (element.data().id == id) {
-        obj = element.data()
-      }
+  if (!userCol.value) {
+    await getCurrentUser().then(async () => {
+      await getDocs(collection(db, userCol.value)).then((response) => {
+        response.forEach((element) => {
+          if (element.data().id == id) {
+            obj = element.data()
+          }
+        })
+      })
     })
-  })
+  } else {
+    await getDocs(collection(db, userCol.value)).then((response) => {
+      response.forEach((element) => {
+        if (element.data().id == id) {
+          obj = element.data()
+        }
+      })
+    })
+  }
 
   return obj
 }

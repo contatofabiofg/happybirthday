@@ -102,11 +102,12 @@ async function getPersonData() {
     let id = route.params.id
     let pessoa = await searchName(id)
     console.log(pessoa)
+
     nameInput.value = pessoa.name
     sexInput.value = pessoa.sex
     connectionInput.value = pessoa.connection
-    monthInput.value = pessoa.month
-    dayInput.value = pessoa.day
+    monthInput.value = pessoa.month * 1
+    dayInput.value = pessoa.day * 1
     img.value = pessoa.img
     idPerson.value = pessoa.id
   }
@@ -132,6 +133,9 @@ const alerta = async (atualizar) => {
     })
 
     await alert.present()
+    await alert.onDidDismiss().then(() => {
+      router.push('/dashboard')
+    })
   } else {
     const alert = await alertController.create({
       header: 'Parabéns!',
@@ -141,6 +145,9 @@ const alerta = async (atualizar) => {
     })
 
     await alert.present()
+    await alert.onDidDismiss().then(() => {
+      router.push('/dashboard')
+    })
   }
 }
 </script>

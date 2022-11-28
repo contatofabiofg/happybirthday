@@ -6,9 +6,7 @@ import { IonPage } from '@ionic/vue'
 import { initializeApp } from 'firebase/app'
 import {
   getAuth,
-  signInWithRedirect,
   signInWithEmailAndPassword,
-  FacebookAuthProvider,
   onAuthStateChanged,
   sendEmailVerification,
 } from 'firebase/auth'
@@ -21,12 +19,11 @@ const router = useRouter()
 const auth = getAuth()
 const emailInput = ref('')
 const passInput = ref(null)
-const providerFacebook = new FacebookAuthProvider()
 
 const loading = ref(true)
 
 onAuthStateChanged(auth, (user) => {
-  if (user) {
+  if (user && user.emailVerified) {
     // User is signed in, see docs for a list of available properties
     // https://firebase.google.com/docs/reference/js/firebase.User
     //const uid = user.uid;
@@ -43,7 +40,7 @@ function login() {
   signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
     .then(() => {
       if (auth.currentUser.emailVerified) {
-        router.push({ name: 'Home' })
+        router.push('/dashboard')
       } else {
         if (
           window.confirm(
@@ -65,10 +62,6 @@ function login() {
     .catch((error) => {
       alert(error)
     })
-}
-
-function handleFacebookLogin() {
-  signInWithRedirect(auth, providerFacebook)
 }
 
 function handleGoogleLogin() {
@@ -106,28 +99,13 @@ function handleGoogleLogin() {
         @keyup.enter="login()"
       />
       <div class="flex justify-between text-xs my-2">
-        <a href="" @click="router.push({ name: 'SiginUp' })"
-          >Criar nova conta</a
-        >
+        <a href="" @click="router.push('/cadastrar')">Criar nova conta</a>
         <a href="" @click="router.push({ name: 'ResetPass' })"
           >Esqueceu a senha?</a
         >
       </div>
       <button @click="login()">Entrar</button>
 
-      <div
-        tabindex="0"
-        class="w-full p-3 border bg-white rounded-md drop-shadow-lg hover:bg-slate-100 border-slate-200 mb-2 mt-4 text-center cursor-pointer select-none"
-        @click="handleFacebookLogin"
-      >
-        Entrar com Facebook
-        <img
-          src="../theme/facebook.png"
-          alt=""
-          role="presentation"
-          class="w-5 ml-1 inline"
-        />
-      </div>
       <div
         tabindex="0"
         class="w-full p-3 border bg-white rounded-md drop-shadow-lg hover:bg-slate-100 border-slate-200 text-center cursor-pointer select-none"
