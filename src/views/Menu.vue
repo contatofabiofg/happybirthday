@@ -8,7 +8,7 @@ import {
 } from '@ionic/vue'
 import { useRouter } from 'vue-router'
 
-import { signOut } from '../firebase'
+import { signOut } from '../services/firebase'
 
 const router = useRouter()
 
@@ -27,12 +27,9 @@ async function logout() {
           alt="Logo Happy Birthday"
           class="w-48 m-auto my-3"
         />
-        <img
-          src="../theme/logout.png"
-          alt=""
-          class="absolute top-5 right-5 w-5 cursor-pointer"
-          @click="logout()"
-        />
+        <button @click="logout()" class="absolute top-5 right-5 w-5">
+          <img src="../theme/logout.png" alt="Logout" />
+        </button>
       </ion-toolbar>
     </ion-header>
 

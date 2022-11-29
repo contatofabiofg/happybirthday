@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { firebaseConfig } from '../firebase'
-import { IonPage } from '@ionic/vue'
+import { firebaseConfig, sendPasswordResetEmail } from '../services/firebase'
+import { IonPage, IonButton, alertController } from '@ionic/vue'
 import { initializeApp } from 'firebase/app'
 import {
   getAuth,
@@ -11,7 +11,7 @@ import {
   sendEmailVerification,
 } from 'firebase/auth'
 
-import { signInWithGoogle } from '../firebase'
+import { signInWithGoogle } from '../services/firebase'
 
 initializeApp(firebaseConfig)
 
@@ -19,20 +19,13 @@ const router = useRouter()
 const auth = getAuth()
 const emailInput = ref('')
 const passInput = ref(null)
-
 const loading = ref(true)
 
 onAuthStateChanged(auth, (user) => {
   if (user && user.emailVerified) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/firebase.User
-    //const uid = user.uid;
-    router.push('/dashboard')
-    // ...
+    router.push('/home')
   } else {
     loading.value = false
-    // User is signed out
-    // ...
   }
 })
 
@@ -40,7 +33,7 @@ function login() {
   signInWithEmailAndPassword(auth, emailInput.value, passInput.value)
     .then(() => {
       if (auth.currentUser.emailVerified) {
-        router.push('/dashboard')
+        router.push('/home')
       } else {
         if (
           window.confirm(
@@ -67,8 +60,31 @@ function login() {
 function handleGoogleLogin() {
   //signInWithRedirect(auth, providerGoogle)
   signInWithGoogle().then(() => {
-    router.push('/dashboard')
+    router.push('/home')
   })
+}
+
+async function resetPass() {
+  const alert = await alertController.create({
+    header: 'Digite seu E-mail',
+    subHeader: 'Vamos enviar um link para você redefinir sua senha',
+    buttons: [
+      {
+        text: 'Enviar',
+        handler: (alertData) => {
+          //takes the data
+          sendPasswordResetEmail(alertData.email)
+        },
+      },
+    ],
+    inputs: [
+      {
+        name: 'email',
+        placeholder: 'Email',
+      },
+    ],
+  })
+  await alert.present()
 }
 </script>
 
@@ -99,32 +115,34 @@ function handleGoogleLogin() {
         @keyup.enter="login()"
       />
       <div class="flex justify-between text-xs my-2">
-        <a href="" @click="router.push('/cadastrar')">Criar nova conta</a>
-        <a href="" @click="router.push({ name: 'ResetPass' })"
-          >Esqueceu a senha?</a
+        <a class="cursor-pointer font-bold" @click="router.push('/signin')"
+          >Criar nova conta</a
         >
+        <a class="cursor-pointer" @click="resetPass()">Esqueceu a senha?</a>
       </div>
-      <button @click="login()">Entrar</button>
+      <ion-button class="my-3" shape="round" @click="login()"
+        >Entrar</ion-button
+      >
 
-      <div
-        tabindex="0"
-        class="w-full p-3 border bg-white rounded-md drop-shadow-lg hover:bg-slate-100 border-slate-200 text-center cursor-pointer select-none"
+      <ion-button
+        fill="outline"
+        shape="round"
+        class="mb-3 rounded-full"
         @click="handleGoogleLogin"
       >
-        Entrar com Google
         <img
           src="../theme/google.png"
           alt=""
           role="presentation"
-          class="w-5 ml-1 inline"
-        />
-      </div>
+          class="w-5 mr-2 inline"
+        />Entrar com Google
+      </ion-button>
     </div>
     <div
       v-if="loading"
       class="w-screen h-screen flex justify-center items-center bg-white/10 backdrop-blur-sm fixed left-0 top-0 z-10"
     >
-      <img src="../theme/spinner.gif" alt="carregando" class="w-32" />
+      <img src="../theme/spinner.gif" alt="" role="presentation" class="w-32" />
     </div>
   </ion-page>
 </template>

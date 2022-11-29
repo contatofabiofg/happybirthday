@@ -16,14 +16,8 @@ import {
 } from '@ionic/vue'
 import { computed, ref, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { createName, searchName, updateName } from '../firebase'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { initializeApp } from 'firebase/app'
-import { firebaseConfig } from '../firebase'
+import { createName, searchName, updateName } from '../services/firebase'
 import { arrowBack } from 'ionicons/icons'
-
-initializeApp(firebaseConfig)
-const auth = getAuth()
 
 const route = useRoute()
 const router = useRouter()
@@ -32,21 +26,17 @@ const sexInput = ref('')
 const connectionInput = ref('')
 const monthInput = ref('')
 const dayInput = ref('')
-const collection = ref('')
+
 const img = ref('smile.png')
 const idPerson = ref(null)
 
-onAuthStateChanged(auth, () => {
-  collection.value
-})
 onMounted(() => {
-  console.log('chegou no onMounted')
   getPersonData()
-}),
-  watch(route, () => {
-    console.log('chegou no watch')
-    getPersonData()
-  })
+})
+
+watch(route, () => {
+  getPersonData()
+})
 
 const months31 = ['1', '3', '5', '7', '8', '10', '12']
 const months30 = ['4', '6', '7', '9']
@@ -99,10 +89,8 @@ async function gravar(atualizar) {
 async function getPersonData() {
   limpar()
   if (route.params.id) {
-    console.log('chegou')
     let id = route.params.id
     let pessoa = await searchName(id)
-    console.log(pessoa)
 
     nameInput.value = pessoa.name
     sexInput.value = pessoa.sex
@@ -135,7 +123,7 @@ const alerta = async (atualizar) => {
 
     await alert.present()
     await alert.onDidDismiss().then(() => {
-      router.push('/dashboard')
+      router.push('/home')
     })
   } else {
     const alert = await alertController.create({
@@ -147,7 +135,7 @@ const alerta = async (atualizar) => {
 
     await alert.present()
     await alert.onDidDismiss().then(() => {
-      router.push('/dashboard')
+      router.push('/home')
     })
   }
 }
@@ -282,7 +270,7 @@ const alerta = async (atualizar) => {
       >
     </div>
     <ion-fab class="fixed bottom-5 right-5">
-      <ion-fab-button @click="router.push('/dashboard')">
+      <ion-fab-button @click="router.push('/home')">
         <ion-icon :icon="arrowBack"></ion-icon>
       </ion-fab-button>
     </ion-fab>

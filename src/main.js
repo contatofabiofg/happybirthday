@@ -22,8 +22,11 @@ import '@ionic/vue/css/display.css'
 
 /* Theme variables */
 import './theme/variables.css'
+import { addListeners } from './services/push'
 
 const app = createApp(App).use(IonicVue).use(router)
+
+addListeners()
 
 router.isReady().then(() => {
   app.mount('#app')

@@ -3,8 +3,9 @@ import { IonPage, IonFab, IonFabButton, IonLabel, IonIcon } from '@ionic/vue'
 import { ref, watch, require } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { LocalNotifications } from '@capacitor/local-notifications'
 
-import { getAllDocs, getCurrentUser, keyFire } from '../firebase'
+import { getAllDocs, getCurrentUser, keyFire } from '../services/firebase'
 import { add } from 'ionicons/icons'
 
 const result = ref('')
@@ -25,7 +26,6 @@ function ordenar() {
     )
   })
   resultOrder.value.forEach((element) => {
-    console.log(new Date(year, element.month - 1, element.day))
     if (new Date(year, element.month - 1, element.day) > new Date()) {
       nextBirths.value.push(element)
     }
@@ -71,11 +71,24 @@ async function getData() {
 }
 
 function editarPessoa(id) {
-  router.push('/cadastro/' + id)
+  router.push('/person/' + id)
 }
 
 function showEmoji(img) {
   return require('../theme/emoji/' + img)
+}
+
+async function notification() {
+  await LocalNotifications.requestPermissions()
+  await LocalNotifications.schedule({
+    notifications: [
+      {
+        title: 'Olha que bacana!',
+        body: 'A notificação local está funcionando. Falta implementar o conteúdo e os intervalos de tempo.',
+        id: 1,
+      },
+    ],
+  })
 }
 
 const router = useRouter()
@@ -83,7 +96,7 @@ const router = useRouter()
 <template>
   <ion-page class="flex flex-col justify-start">
     <ion-fab class="fixed bottom-5 right-5">
-      <ion-fab-button @click="router.push('/cadastro')">
+      <ion-fab-button @click="router.push('/person'), notification()">
         <ion-icon :icon="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>

@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore'
 import { ref } from 'vue'
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
+import { PushNotifications } from '@capacitor/push-notifications'
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyCPahw5Gur6j73ppI1emMW8e--6Naz62ss',
@@ -52,10 +53,16 @@ export const signInWithGoogle = async () => {
     let user = await getCurrentUser()
     userCol.value = user.email
   } catch (e) {
-    alert(e)
+    console.log(e)
   }
 
   return result.user
+}
+
+export const sendPasswordResetEmail = async (e) => {
+  await FirebaseAuthentication.sendPasswordResetEmail({
+    email: e,
+  })
 }
 
 export const signOut = async () => {
@@ -71,6 +78,12 @@ export async function createName(item) {
     setDoc(doc(db, userCol.value, item.name), item)
   }
   keyFire.value++
+
+  await PushNotifications.addListener('registration', (token) => {
+    console.info('Registration token: ', token.value)
+  })
+
+  await PushNotifications.register()
 }
 
 export async function updateName(item) {
@@ -80,6 +93,12 @@ export async function updateName(item) {
     alert(e)
   }
   keyFire.value++
+
+  await PushNotifications.addListener('registration', (token) => {
+    console.info('Registration token: ', token.value)
+  })
+
+  await PushNotifications.register()
 }
 
 export async function getAllDocs(col) {

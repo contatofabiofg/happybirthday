@@ -3,8 +3,8 @@ import { createRouter, createWebHistory } from '@ionic/vue-router'
 const routes = [
   { path: '/login', component: () => import('@/views/Login.vue') },
   {
-    path: '/cadastrar',
-    component: () => import('../views/Cadastrar.vue'),
+    path: '/signin',
+    component: () => import('../views/SignIn.vue'),
   },
   {
     path: '/',
@@ -12,16 +12,16 @@ const routes = [
     redirect: '/login',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('../components/Dashboard.vue'),
+        path: 'home',
+        component: () => import('../components/Home.vue'),
       },
       {
-        path: 'cadastro',
-        component: () => import('../components/Cadastro.vue'),
+        path: 'person',
+        component: () => import('../components/Person.vue'),
       },
       {
-        path: 'cadastro/:id',
-        component: () => import('../components/Cadastro.vue'),
+        path: 'person/:id',
+        component: () => import('../components/Person.vue'),
       },
     ],
   },

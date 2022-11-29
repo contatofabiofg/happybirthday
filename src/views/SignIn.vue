@@ -1,20 +1,16 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { firebaseConfig, createUserWithEmailAndPassword } from '../firebase'
-import { IonPage } from '@ionic/vue'
-import { initializeApp } from 'firebase/app'
-
-initializeApp(firebaseConfig)
+import { createUserWithEmailAndPassword } from '../services/firebase'
+import { IonPage, IonButton, IonFab, IonFabButton, IonIcon } from '@ionic/vue'
+import { arrowBack } from 'ionicons/icons'
 
 const router = useRouter()
-
 const emailInput = ref('')
 const passInput = ref(null)
-
 const loading = ref(false)
 
-function cadastrar() {
+function register() {
   try {
     createUserWithEmailAndPassword(emailInput.value, passInput.value).then(
       () => {
@@ -53,7 +49,9 @@ function cadastrar() {
         v-model="passInput"
       />
 
-      <button @click="cadastrar()">Cadastrar</button>
+      <ion-button class="my-3" shape="round" @click="register()"
+        >Registrar</ion-button
+      >
     </div>
     <div
       v-if="loading"
@@ -61,6 +59,12 @@ function cadastrar() {
     >
       <img src="../theme/spinner.gif" alt="carregando" class="w-32" />
     </div>
+
+    <ion-fab class="fixed bottom-5 right-5">
+      <ion-fab-button @click="router.push('/login')">
+        <ion-icon :icon="arrowBack"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </ion-page>
 </template>
 

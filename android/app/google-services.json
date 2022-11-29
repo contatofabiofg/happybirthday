@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:868336108622:android:630afab8621b824ed72f1f",
+        "mobilesdk_app_id": "1:868336108622:android:c8ef1b3fc14f07a0d72f1f",
         "android_client_info": {
-          "package_name": "io.ionic.starter"
+          "package_name": "com.fabiogoncalves.happybirthday"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "868336108622-mtn2736oiui04qv23bmi6rfcbo05jvc7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fabiogoncalves.happybirthday",
+            "certificate_hash": "37f92f7555aa2b675d07793cf8465043b0172ad5"
+          }
+        },
         {
           "client_id": "868336108622-ntg3i9fe6j260tjmb1h01re4bdl4frd9.apps.googleusercontent.com",
           "client_type": 3
