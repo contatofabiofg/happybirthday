@@ -3,7 +3,6 @@ import { IonPage, IonFab, IonFabButton, IonLabel, IonIcon } from '@ionic/vue'
 import { ref, watch, require } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-
 import { getUsersAndDates } from '../services/localNotifications'
 import { getAllDocs, keyFire } from '../services/firebase'
 import { add } from 'ionicons/icons'
@@ -11,7 +10,6 @@ import { add } from 'ionicons/icons'
 const result = ref('')
 const resultOrder = ref('')
 const nextBirths = ref([])
-//const collection = ref('')
 const loading = ref(true)
 const date = new Date()
 // eslint-disable-next-line no-unused-vars
@@ -87,7 +85,7 @@ const router = useRouter()
 <template>
   <ion-page class="flex flex-col justify-start">
     <ion-fab class="fixed bottom-5 right-5">
-      <ion-fab-button @click="router.push('/person'), notification()">
+      <ion-fab-button @click="router.push('/person')">
         <ion-icon :icon="add"></ion-icon>
       </ion-fab-button>
     </ion-fab>
