@@ -1,6 +1,7 @@
 <script setup>
 import {
   IonPage,
+  IonContent,
   IonRadio,
   IonRadioGroup,
   IonItem,
@@ -14,7 +15,7 @@ import {
   IonSelectOption,
   alertController,
 } from '@ionic/vue'
-import { computed, ref, watch, onMounted } from 'vue'
+import { computed, ref, watch, onMounted, require } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { createName, searchName, updateName } from '../services/firebase'
 import { arrowBack } from 'ionicons/icons'
@@ -139,140 +140,178 @@ const alerta = async (atualizar) => {
     })
   }
 }
+
+function showEmoji() {
+  return require('../theme/emoji/' + img.value)
+}
 </script>
 <template>
   <ion-page>
-    <div
-      class="mt-20 m-auto p-2 w-[95%] flex flex-col rounded-xl bg-white drop-shadow-xl"
-    >
-      <ion-label class="font-bold">Nome</ion-label>
-      <input
-        :disabled="idPerson"
-        id="name"
-        v-model="nameInput"
-        type="text"
-        class="border border-slate-400 rounded w-full p-2 my-2 outline-none duration-100 focus:drop-shadow-md"
-      />
-
-      <ion-label class="font-bold">Sexo</ion-label>
-      <ion-select
-        v-model="sexInput"
-        id="sex"
-        interface="popover"
-        placeholder="Selecione"
-        class="border border-slate-400 rounded w-full p-2 my-2"
+    <ion-content>
+      <div
+        class="mt-20 mb-10 mx-auto p-2 w-[95%] flex flex-col rounded-xl bg-white drop-shadow-xl"
       >
-        <ion-select-option value="masculino">Masculino</ion-select-option>
-        <ion-select-option value="feminino">Feminino</ion-select-option>
-      </ion-select>
-      <ion-label class="font-bold">Tipo de Conexão</ion-label>
-      <ion-select
-        v-model="connectionInput"
-        id="connection"
-        interface="popover"
-        placeholder="Selecione"
-        class="border border-slate-400 rounded w-full p-2 my-2"
-      >
-        <ion-select-option value="paimae">Pai/Mãe</ion-select-option>
-        <ion-select-option value="irmaoirma">Irmão/Irmã</ion-select-option>
-        <ion-select-option value="amigoamiga">Amigo(a)</ion-select-option>
-        <ion-select-option value="namoradonamroada"
-          >Namorado(a)</ion-select-option
+        <div
+          v-if="idPerson"
+          class="w-full flex flex-col justify-center items-center mt-2"
         >
-        <ion-select-option value="esposoesposa">Esposo(a)</ion-select-option>
-        <ion-select-option value="noivonoiva">Noivo(a)</ion-select-option>
-        <ion-select-option value="colegadetrabalho"
-          >Colega de Trabalho</ion-select-option
-        >
-        <ion-select-option value="outros">Outro</ion-select-option>
-      </ion-select>
+          <div
+            v-if="sexInput == 'masculino'"
+            class="bg-blue-200 w-36 h-32 rounded-full absolute"
+          ></div>
+          <div v-else class="bg-red-200 w-36 h-32 rounded-full absolute"></div>
+          <img
+            v-if="sexInput == 'masculino'"
+            src="../theme/boy.png"
+            alt="Sem foto"
+            class="w-36 relative"
+          />
+          <img
+            v-else
+            src="../theme/girl.png"
+            alt="Sem foto"
+            class="w-36 relative"
+          />
+          <img
+            :src="showEmoji()"
+            alt=""
+            class="w-10 relative bottom-5 -left-12 -rotate-12"
+          />
+          <h1 class="font-bold text-3xl -mt-5">
+            {{ nameInput }}
+          </h1>
+        </div>
+        <div v-else>
+          <ion-label class="font-bold">Nome</ion-label>
+          <input
+            :disabled="idPerson"
+            id="name"
+            v-model="nameInput"
+            type="text"
+            class="border border-slate-400 rounded w-full p-2 my-2 outline-none duration-100 focus:drop-shadow-md"
+          />
+        </div>
 
-      <ion-label class="font-bold">Aniversário</ion-label>
-      <div class="flex w-full">
-        <div class="w-full">
-          <span class="font-bold">Mês:</span>
-          <ion-select
-            v-model="monthInput"
-            id="month"
-            interface="popover"
-            @ionChange="dayInput = ''"
-            placeholder="Selecione"
-            class="border border-slate-400 rounded w-full p-2 my-2"
+        <ion-label class="font-bold">Sexo</ion-label>
+        <ion-select
+          v-model="sexInput"
+          id="sex"
+          interface="popover"
+          placeholder="Selecione"
+          class="border border-slate-400 rounded w-full p-2 my-2"
+        >
+          <ion-select-option value="masculino">Masculino</ion-select-option>
+          <ion-select-option value="feminino">Feminino</ion-select-option>
+        </ion-select>
+        <ion-label class="font-bold">Tipo de Conexão</ion-label>
+        <ion-select
+          v-model="connectionInput"
+          id="connection"
+          interface="popover"
+          placeholder="Selecione"
+          class="border border-slate-400 rounded w-full p-2 my-2"
+        >
+          <ion-select-option value="paimae">Pai/Mãe</ion-select-option>
+          <ion-select-option value="irmaoirma">Irmão/Irmã</ion-select-option>
+          <ion-select-option value="amigoamiga">Amigo(a)</ion-select-option>
+          <ion-select-option value="namoradonamroada"
+            >Namorado(a)</ion-select-option
           >
-            <ion-select-option
-              v-for="(item, index) in months"
-              :key="index"
-              :value="index + 1"
-              >{{ item }}</ion-select-option
-            >
-          </ion-select>
-        </div>
-        <div class="w-full mx-1">
-          <span class="font-bold">Dia:</span>
-          <ion-select
-            :disabled="!monthInput"
-            v-model="dayInput"
-            id="day"
-            interface="popover"
-            placeholder="Selecione"
-            class="border border-slate-400 rounded w-full p-2 my-2"
+          <ion-select-option value="esposoesposa">Esposo(a)</ion-select-option>
+          <ion-select-option value="noivonoiva">Noivo(a)</ion-select-option>
+          <ion-select-option value="colegadetrabalho"
+            >Colega de Trabalho</ion-select-option
           >
-            <ion-select-option
-              v-for="(item, index) in days"
-              :key="index"
-              :value="item"
-              >{{ item }}</ion-select-option
+          <ion-select-option value="outros">Outro</ion-select-option>
+        </ion-select>
+
+        <ion-label class="font-bold">Aniversário</ion-label>
+        <div class="flex w-full">
+          <div class="w-full">
+            <span class="font-bold">Mês:</span>
+            <ion-select
+              v-model="monthInput"
+              id="month"
+              interface="popover"
+              @ionChange="dayInput = ''"
+              placeholder="Selecione"
+              class="border border-slate-400 rounded w-full p-2 my-2"
             >
-          </ion-select>
+              <ion-select-option
+                v-for="(item, index) in months"
+                :key="index"
+                :value="index + 1"
+                >{{ item }}</ion-select-option
+              >
+            </ion-select>
+          </div>
+          <div class="w-full mx-1">
+            <span class="font-bold">Dia:</span>
+            <ion-select
+              :disabled="!monthInput"
+              v-model="dayInput"
+              id="day"
+              interface="popover"
+              placeholder="Selecione"
+              class="border border-slate-400 rounded w-full p-2 my-2"
+            >
+              <ion-select-option
+                v-for="(item, index) in days"
+                :key="index"
+                :value="item"
+                >{{ item }}</ion-select-option
+              >
+            </ion-select>
+          </div>
         </div>
+        <ion-list>
+          <ion-radio-group
+            value="strawberries"
+            v-model="img"
+            class="flex justify-between"
+          >
+            <ion-item>
+              <img src="../theme/emoji/smile.png" alt="" class="w-5 mr-2" />
+              <ion-radio slot="end" value="smile.png"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <img src="../theme/emoji/sunglass.png" alt="" class="w-5 mr-2" />
+              <ion-radio slot="end" value="sunglass.png"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <img src="../theme/emoji/heart.png" alt="" class="w-5 mr-2" />
+              <ion-radio slot="end" value="heart.png"></ion-radio>
+            </ion-item>
+
+            <ion-item>
+              <img src="../theme/emoji/crown.png" alt="" class="w-5 mr-2" />
+              <ion-radio slot="end" value="crown.png"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+
+        <ion-button
+          v-if="!idPerson"
+          class="w-full my-1"
+          shape="round"
+          @click="gravar()"
+          >Adicionar</ion-button
+        >
+        <ion-button
+          v-else
+          class="w-full my-1"
+          shape="round"
+          @click="gravar('atualizar')"
+          >Atualizar</ion-button
+        >
       </div>
-      <ion-list>
-        <ion-radio-group
-          value="strawberries"
-          v-model="img"
-          class="flex justify-between"
-        >
-          <ion-item>
-            <img src="../theme/emoji/smile.png" alt="" class="w-5 mr-2" />
-            <ion-radio slot="end" value="smile.png"></ion-radio>
-          </ion-item>
-
-          <ion-item>
-            <img src="../theme/emoji/sunglass.png" alt="" class="w-5 mr-2" />
-            <ion-radio slot="end" value="sunglass.png"></ion-radio>
-          </ion-item>
-
-          <ion-item>
-            <img src="../theme/emoji/heart.png" alt="" class="w-5 mr-2" />
-            <ion-radio slot="end" value="heart.png"></ion-radio>
-          </ion-item>
-
-          <ion-item>
-            <img src="../theme/emoji/crown.png" alt="" class="w-5 mr-2" />
-            <ion-radio slot="end" value="crown.png"></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </ion-list>
-
-      <ion-button
-        v-if="!idPerson"
-        class="w-full my-1"
-        shape="round"
-        @click="gravar()"
-        >Adicionar</ion-button
-      >
-      <ion-button
-        v-else
-        class="w-full my-1"
-        shape="round"
-        @click="gravar('atualizar')"
-        >Atualizar</ion-button
-      >
-    </div>
-    <ion-fab class="fixed bottom-5 right-5">
-      <ion-fab-button @click="router.push('/home')">
-        <ion-icon :icon="arrowBack"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+      <ion-fab class="fixed bottom-5 right-5">
+        <ion-fab-button @click="router.push('/home')">
+          <ion-icon :icon="arrowBack"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+    </ion-content>
   </ion-page>
 </template>
