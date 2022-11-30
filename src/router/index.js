@@ -23,6 +23,10 @@ const routes = [
         path: 'person/:id',
         component: () => import('../components/Person.vue'),
       },
+      {
+        path: 'recipes/:category',
+        component: () => import('../components/Recipes.vue'),
+      },
     ],
   },
 ]

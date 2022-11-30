@@ -3,15 +3,15 @@ import { IonPage, IonFab, IonFabButton, IonLabel, IonIcon } from '@ionic/vue'
 import { ref, watch, require } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { LocalNotifications } from '@capacitor/local-notifications'
 
-import { getAllDocs, getCurrentUser, keyFire } from '../services/firebase'
+import { getUsersAndDates } from '../services/localNotifications'
+import { getAllDocs, keyFire } from '../services/firebase'
 import { add } from 'ionicons/icons'
 
 const result = ref('')
 const resultOrder = ref('')
 const nextBirths = ref([])
-const collection = ref('')
+//const collection = ref('')
 const loading = ref(true)
 const date = new Date()
 // eslint-disable-next-line no-unused-vars
@@ -39,35 +39,39 @@ watch(keyFire, () => {
 const auth = getAuth()
 
 onAuthStateChanged(auth, async () => {
-  let usuario = await getCurrentUser()
-  collection.value = usuario.email
+  //let usuario = await getCurrentUser()
+  //collection.value = usuario.email
   getData()
 })
 
 async function getData() {
+  loading.value = true
   result.value = []
   resultOrder.value = []
   nextBirths.value = []
 
-  let data = await getAllDocs(collection.value)
+  let data = await getAllDocs()
 
-  data.forEach((element) => {
-    let obj = {
-      name: element.data().name,
-      day: element.data().day,
-      month: element.data().month,
-      connection: element.data().connection,
-      number: element.data().number,
-      sex: element.data().sex,
-      img: element.data().img,
-      id: element.data().id,
-    }
-    result.value.push(obj)
-  })
+  if (data) {
+    data.forEach((element) => {
+      let obj = {
+        name: element.data().name,
+        day: element.data().day,
+        month: element.data().month,
+        connection: element.data().connection,
+        number: element.data().number,
+        sex: element.data().sex,
+        img: element.data().img,
+        id: element.data().id,
+      }
+      result.value.push(obj)
+    })
+  }
 
   loading.value = false
 
   ordenar()
+  getUsersAndDates()
 }
 
 function editarPessoa(id) {
@@ -76,19 +80,6 @@ function editarPessoa(id) {
 
 function showEmoji(img) {
   return require('../theme/emoji/' + img)
-}
-
-async function notification() {
-  await LocalNotifications.requestPermissions()
-  await LocalNotifications.schedule({
-    notifications: [
-      {
-        title: 'Olha que bacana!',
-        body: 'A notificação local está funcionando. Falta implementar o conteúdo e os intervalos de tempo.',
-        id: 1,
-      },
-    ],
-  })
 }
 
 const router = useRouter()
@@ -104,9 +95,15 @@ const router = useRouter()
     <div
       class="mt-20 mx-auto p-2 w-[95%] flex flex-col rounded-xl bg-white drop-shadow-xl"
     >
-      <ion-label class="my-3 text-center font-bold"
-        >Próximos Aniversários:
-      </ion-label>
+      <div class="my-3 w-full font-bold flex justify-center items-center">
+        <ion-label>Próximos Aniversários: </ion-label>
+        <img
+          src="../theme/refresh.png"
+          class="ml-3 w-4 cursor-pointer"
+          @click="getData()"
+          alt="atualizar"
+        />
+      </div>
       <div v-if="!loading && nextBirths.length > 0">
         <div class="overflow-scroll">
           <li :inset="true" v-for="(item, index) in nextBirths" :key="index">
@@ -150,13 +147,15 @@ const router = useRouter()
       <div class="w-full">
         <div class="flex justify-between">
           <div
-            class="flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            class="cursor-pointer flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            @click="router.push('/recipes/cakes')"
           >
             <span><img src="../theme/bolo.png" alt="" class="w-4 mr-2" /></span>
             Bolos
           </div>
           <div
-            class="flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            class="cursor-pointer flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            @click="router.push('/recipes/snacks')"
           >
             <span
               ><img src="../theme/coxinha.png" alt="" class="w-4 mr-2"
@@ -166,7 +165,8 @@ const router = useRouter()
         </div>
         <div class="flex justify-between">
           <div
-            class="flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            class="cursor-pointer flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            @click="router.push('/recipes/pastries')"
           >
             <span
               ><img src="../theme/pastel.png" alt="" class="w-4 mr-2"
@@ -174,7 +174,8 @@ const router = useRouter()
             Pastéis
           </div>
           <div
-            class="flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            class="cursor-pointer flex justify-center items-center w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+            @click="router.push('/recipes/pies')"
           >
             <span
               ><img src="../theme/torta.png" alt="" class="w-4 mr-2"
@@ -194,28 +195,36 @@ const router = useRouter()
       </ion-label>
       <div class="w-full">
         <div class="flex justify-between">
-          <div
-            class="w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+          <button
+            disabled
+            title="Em breve!"
+            class="text-slate-300 w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
           >
             Passeios
-          </div>
-          <div
-            class="w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+          </button>
+          <button
+            disabled
+            title="Em breve!"
+            class="text-slate-300 w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
           >
             Restaurante
-          </div>
+          </button>
         </div>
         <div class="flex justify-between">
-          <div
-            class="w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+          <button
+            disabled
+            title="Em breve!"
+            class="text-slate-300 w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
           >
             Baratinhos
-          </div>
-          <div
-            class="w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
+          </button>
+          <button
+            disabled
+            title="Em breve!"
+            class="text-slate-300 w-full py-2 px-4 bg-gradient-to-r from-slate-100 to-slate-50 drop-shadow rounded-xl text-center font-bold m-1"
           >
             Por conexão
-          </div>
+          </button>
         </div>
       </div>
     </div>

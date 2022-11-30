@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { getUsersAndDates } from '../services/localNotifications'
 import { firebaseConfig, sendPasswordResetEmail } from '../services/firebase'
 import { IonPage, IonButton, alertController } from '@ionic/vue'
 import { initializeApp } from 'firebase/app'
@@ -23,6 +24,7 @@ const loading = ref(true)
 
 onAuthStateChanged(auth, (user) => {
   if (user && user.emailVerified) {
+    getUsersAndDates()
     router.push('/home')
   } else {
     loading.value = false

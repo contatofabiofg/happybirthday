@@ -40,7 +40,6 @@ export const createUserWithEmailAndPassword = async (e, p) => {
 
 export const getCurrentUser = async () => {
   const result = await FirebaseAuthentication.getCurrentUser()
-
   userCol.value = result.user.email
   return result.user
 }
@@ -101,12 +100,20 @@ export async function updateName(item) {
   await PushNotifications.register()
 }
 
-export async function getAllDocs(col) {
+export async function getAllDocs() {
   let responseData
 
-  await getDocs(collection(db, col)).then((response) => {
-    responseData = response
-  })
+  if (!userCol.value) {
+    await getCurrentUser().then(() => {
+      getDocs(collection(db, userCol.value)).then((response) => {
+        responseData = response
+      })
+    })
+  } else {
+    await getDocs(collection(db, userCol.value)).then((response) => {
+      responseData = response
+    })
+  }
 
   return responseData
 }
