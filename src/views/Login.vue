@@ -24,6 +24,7 @@ const loading = ref(true)
 
 onAuthStateChanged(auth, (user) => {
   if (user && user.emailVerified) {
+    console.log('vindoDoLogin')
     getUsersAndDates()
     router.push('/home')
   } else {

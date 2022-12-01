@@ -20,6 +20,10 @@ const routes = [
         component: () => import('../components/Person.vue'),
       },
       {
+        path: 'persons',
+        component: () => import('../components/Persons.vue'),
+      },
+      {
         path: 'person/:id',
         component: () => import('../components/Person.vue'),
       },

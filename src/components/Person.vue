@@ -15,9 +15,14 @@ import {
   IonSelectOption,
   alertController,
 } from '@ionic/vue'
-import { computed, ref, watch, onMounted, require } from 'vue'
+import { computed, ref, onMounted, require } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { createName, searchName, updateName } from '../services/firebase'
+import {
+  createName,
+  deleteName,
+  searchName,
+  updateName,
+} from '../services/firebase'
 import { arrowBack } from 'ionicons/icons'
 
 const route = useRoute()
@@ -32,10 +37,7 @@ const img = ref('smile.png')
 const idPerson = ref(null)
 
 onMounted(() => {
-  getPersonData()
-})
-
-watch(route, () => {
+  console.log('onMounted:')
   getPersonData()
 })
 
@@ -117,6 +119,33 @@ async function gravar(atualizar) {
     alerta()
     limpar()
   }
+}
+
+async function apagar() {
+  const alert = await alertController.create({
+    header: 'Deseja excluir esse cadastro?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+      },
+      {
+        text: 'Sim',
+        role: 'confirm',
+        handler: () => {
+          try {
+            deleteName(idPerson.value)
+          } catch (e) {
+            console.log(e)
+            return false
+          } finally {
+            router.push('/home')
+          }
+        },
+      },
+    ],
+  })
+  await alert.present()
 }
 
 async function getPersonData() {
@@ -326,13 +355,21 @@ function showEmoji() {
           @click="gravar()"
           >Adicionar</ion-button
         >
-        <ion-button
-          v-else
-          class="w-full my-1"
-          shape="round"
-          @click="gravar('atualizar')"
-          >Atualizar</ion-button
-        >
+        <div v-else class="">
+          <ion-button
+            class="w-full my-1"
+            shape="round"
+            @click="gravar('atualizar')"
+            >Atualizar</ion-button
+          >
+          <ion-button
+            class="w-full my-1"
+            shape="round"
+            color="danger"
+            @click="apagar()"
+            >Apagar</ion-button
+          >
+        </div>
       </div>
       <ion-fab class="fixed bottom-5 right-5">
         <ion-fab-button @click="router.push('/home')">

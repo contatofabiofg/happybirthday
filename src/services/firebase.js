@@ -148,17 +148,21 @@ export async function searchName(id) {
   return obj
 }
 
+export async function deleteName(id) {
+  if (!userCol.value) {
+    await getCurrentUser().then(async () => {
+      await deleteDoc(doc(db, userCol.value, id))
+    })
+  } else {
+    await deleteDoc(doc(db, userCol.value, id))
+  }
+  keyFire.value++
+}
+
 /*
 
-export const getName = async (id) => {
-  const name = await namesCollection.doc(id).get();
-  return name.exists ? name.data() : null;
-};
 
-export const updateName = (id, name) => {
-  return namesCollection.doc(id).update(name);
-};
-*/
+
 export async function deleteNames(col) {
   let list = []
 
@@ -171,3 +175,5 @@ export async function deleteNames(col) {
     }
   })
 }
+
+*/
