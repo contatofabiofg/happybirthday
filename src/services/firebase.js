@@ -71,10 +71,14 @@ export const signOut = async () => {
 export async function createName(item) {
   if (!userCol.value) {
     await getCurrentUser().then(() => {
-      setDoc(doc(db, userCol.value, item.name), item)
+      try {
+        setDoc(doc(db, userCol.value, item.id), item)
+      } catch (e) {
+        console.log(e)
+      }
     })
   } else {
-    setDoc(doc(db, userCol.value, item.name), item)
+    setDoc(doc(db, userCol.value, item.id), item)
   }
   keyFire.value++
 
@@ -87,7 +91,7 @@ export async function createName(item) {
 
 export async function updateName(item) {
   try {
-    updateDoc(doc(db, userCol.value, item.name), item)
+    updateDoc(doc(db, userCol.value, item.id), item)
   } catch (e) {
     alert(e)
   }

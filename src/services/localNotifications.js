@@ -30,7 +30,7 @@ export async function getUsersAndDates() {
   }
 
   docs.forEach((element) => {
-    let date = new Date(year, element.data().month - 1, element.data().day)
+    let date = new Date(year, element.data().month - 1, element.data().day, 13)
     date.setDate(date.getDate() - 7)
     generateWeekNotification(element.data().name, date)
     months[element.data().month - 1]++
@@ -46,6 +46,7 @@ async function generateWeekNotification(name, date) {
       {
         title: 'Oba! Tem festa vindo aí!',
         body: `Daqui à uma semana ${name} faz aniversário! Já comprou o presente?`,
+        id: 0,
         schedule: { at: date },
       },
     ],
@@ -53,6 +54,7 @@ async function generateWeekNotification(name, date) {
 }
 
 async function generateMonthNotifications() {
+  console.log(months)
   for (const [key, value] of Object.entries(months)) {
     if (value != 0) {
       await LocalNotifications.requestPermissions()
@@ -61,14 +63,15 @@ async function generateMonthNotifications() {
           {
             title: 'Esse mês tem festa? Teeeem!',
             body: `Esse mês ${value} pessoa(s) fazem aniversário! Entre no App e veja quem é!`,
-            schedule: { at: new Date(year, key, 1) },
+            id: 1,
+            schedule: { at: new Date(year, key, 1, 9, 30) },
           },
         ],
       })
     }
   }
 
-  //console.log(await LocalNotifications.getPending())
+  console.log(await LocalNotifications.getPending())
 }
 
 export async function cancelPendings() {
@@ -78,5 +81,24 @@ export async function cancelPendings() {
 
 export async function getPendings() {
   let pendentes = await LocalNotifications.getPending()
+
   return pendentes
+}
+
+export async function testNotification() {
+  await LocalNotifications.requestPermissions()
+  try {
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          title: 'Está funcionando!',
+          body: `Notificações funcionando mesmo quando o app está fechado`,
+          id: 999,
+          schedule: { at: new Date(Date.now() + 10000) },
+        },
+      ],
+    })
+  } catch (e) {
+    alert(e)
+  }
 }

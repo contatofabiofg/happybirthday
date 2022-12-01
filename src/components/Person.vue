@@ -66,6 +66,33 @@ const months = [
   'Dezembro',
 ]
 
+const connection = ref({
+  masculino: [
+    'Pai',
+    'Irmão',
+    'Amigo',
+    'Namorado',
+    'Noivo',
+    'Esposo',
+    'Sogro',
+    'Primo',
+    'Colega de trabalho',
+    'Outro',
+  ],
+  feminino: [
+    'Mãe',
+    'Irmã',
+    'Amiga',
+    'Namorada',
+    'Noiva',
+    'Esposa',
+    'Sogra',
+    'Prima',
+    'Colega de trabalho',
+    'Outro',
+  ],
+})
+
 async function gravar(atualizar) {
   let obj = {
     name: nameInput.value,
@@ -74,7 +101,12 @@ async function gravar(atualizar) {
     month: monthInput.value,
     day: dayInput.value,
     img: img.value,
-    id: new Date().getTime(),
+  }
+
+  if (idPerson.value) {
+    obj.id = idPerson.value.toString()
+  } else {
+    obj.id = new Date().getTime().toString()
   }
 
   if (atualizar) {
@@ -181,10 +213,9 @@ function showEmoji() {
             {{ nameInput }}
           </h1>
         </div>
-        <div v-else>
+        <div>
           <ion-label class="font-bold">Nome</ion-label>
           <input
-            :disabled="idPerson"
             id="name"
             v-model="nameInput"
             type="text"
@@ -198,6 +229,7 @@ function showEmoji() {
           id="sex"
           interface="popover"
           placeholder="Selecione"
+          @ionChange="connectionInput = ''"
           class="border border-slate-400 rounded w-full p-2 my-2"
         >
           <ion-select-option value="masculino">Masculino</ion-select-option>
@@ -205,24 +237,19 @@ function showEmoji() {
         </ion-select>
         <ion-label class="font-bold">Tipo de Conexão</ion-label>
         <ion-select
+          :disabled="!sexInput"
           v-model="connectionInput"
           id="connection"
           interface="popover"
           placeholder="Selecione"
           class="border border-slate-400 rounded w-full p-2 my-2"
         >
-          <ion-select-option value="paimae">Pai/Mãe</ion-select-option>
-          <ion-select-option value="irmaoirma">Irmão/Irmã</ion-select-option>
-          <ion-select-option value="amigoamiga">Amigo(a)</ion-select-option>
-          <ion-select-option value="namoradonamroada"
-            >Namorado(a)</ion-select-option
+          <ion-select-option
+            v-for="(item, index) in connection[sexInput]"
+            :key="index"
+            :value="item"
+            >{{ item }}</ion-select-option
           >
-          <ion-select-option value="esposoesposa">Esposo(a)</ion-select-option>
-          <ion-select-option value="noivonoiva">Noivo(a)</ion-select-option>
-          <ion-select-option value="colegadetrabalho"
-            >Colega de Trabalho</ion-select-option
-          >
-          <ion-select-option value="outros">Outro</ion-select-option>
         </ion-select>
 
         <ion-label class="font-bold">Aniversário</ion-label>
