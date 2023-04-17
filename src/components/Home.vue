@@ -42,7 +42,7 @@ const auth = getAuth()
 onAuthStateChanged(auth, async () => {
   //let usuario = await getCurrentUser()
   //collection.value = usuario.email
-  console.log('mudandoauth')
+
   getData()
 })
 
@@ -111,7 +111,7 @@ const router = useRouter()
           </button>
         </div>
         <div v-if="!loading && nextBirths.length > 0">
-          <div class="overflow-scroll">
+          <div class="overflow-auto">
             <li :inset="true" v-for="(item, index) in nextBirths" :key="index">
               <ul
                 class="w-full flex justify-between items-center p-2 rounded-3xl mb-3 drop-shadow cursor-pointer bg-gradient-to-r from-slate-100 to-slate-50"

@@ -12,6 +12,9 @@ import {
 import { ref } from 'vue'
 import { FirebaseAuthentication } from '@capacitor-firebase/authentication'
 import { PushNotifications } from '@capacitor/push-notifications'
+import { useUserStore } from '../stores/user'
+
+const userStore = useUserStore()
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyCPahw5Gur6j73ppI1emMW8e--6Naz62ss',
@@ -25,9 +28,7 @@ export const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig)
 
 export const keyFire = ref(0)
-
 const db = getFirestore(firebaseApp)
-
 export const userCol = ref(null)
 
 export const createUserWithEmailAndPassword = async (e, p) => {
@@ -41,6 +42,7 @@ export const createUserWithEmailAndPassword = async (e, p) => {
 export const getCurrentUser = async () => {
   const result = await FirebaseAuthentication.getCurrentUser()
   userCol.value = result.user.email
+  userStore.user = result.user.email
   return result.user
 }
 
@@ -106,19 +108,17 @@ export async function updateName(item) {
 
 export async function getAllDocs() {
   let responseData
-
-  if (!userCol.value) {
-    await getCurrentUser().then(() => {
-      getDocs(collection(db, userCol.value)).then((response) => {
+  if (userStore.user) {
+    await getDocs(collection(db, userStore.user)).then((response) => {
+      responseData = response
+    })
+  } else {
+    await getCurrentUser().then(async () => {
+      await getDocs(collection(db, userCol.value)).then((response) => {
         responseData = response
       })
     })
-  } else {
-    await getDocs(collection(db, userCol.value)).then((response) => {
-      responseData = response
-    })
   }
-
   return responseData
 }
 

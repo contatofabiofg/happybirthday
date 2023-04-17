@@ -11,7 +11,7 @@ export async function getUsersAndDates() {
   await cancelPendings()
 
   docs = await getAllDocs()
-  console.log(docs)
+
   today = new Date()
   // month = today.getMonth()
   year = today.getFullYear()
@@ -55,7 +55,6 @@ async function generateWeekNotification(name, date) {
 }
 
 async function generateMonthNotifications() {
-  console.log(months)
   for (const [key, value] of Object.entries(months)) {
     if (value != 0) {
       //await LocalNotifications.requestPermissions()
@@ -71,8 +70,6 @@ async function generateMonthNotifications() {
       })
     }
   }
-
-  console.log(await LocalNotifications.getPending())
 }
 
 export async function cancelPendings() {
